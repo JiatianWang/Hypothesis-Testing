@@ -26,29 +26,54 @@ def get_list_of_university_towns():
 import pandas as pd
 import numpy as np 
 
-ut = pd.read_csv('university_towns.txt', sep="/n", engine = 'python', header=None).rename(columns= {0:'state'})
+ut = pd.read_csv('university_towns.txt', sep="/n", engine = 'python', header=None).rename(columns= {0:'location'})
 
 
 # ut['state'] = ut['location'].apply(lambda x: x.replace('[edit]',''))
 
 # region = ut['state'].apply(lambda x: x.replace(r'\[.*','', regex = True))
 
-ut1= ut.loc[ut['state'].str.contains('[edit]',regex = False)]
-ut1.columns = ['State']
+ut['State']= ut.loc[ut['location'].str.contains('[edit]',regex = False)]
+ut['State'] = ut['State'].fillna(method = 'ffill')
 
-ut2= ut.loc[~ut['state'].str.contains('[edit]',regex = False)].rename(columns = {0:'RegionName'})
-ut2.columns = ['RegionName']
+ut['RegionName'] = ut['location'].apply(lambda x:  x if x[-6:] != '[edit]' else np.nan)
 
-ut1 = ut1['State'].apply(lambda x: x.split('[')[0])
+ut = ut.drop(ut[ut['RegionName'].isna()].index)
 
+ut['State'] = ut['State'].apply(lambda x: x.split('[')[0])
 
-ut2 = ut2['RegionName'].str.replace(r'\(.*\)', '').str.replace(r'\[.*','')
+ut['RegionName']= ut['RegionName'].str.replace(r'\(.*\)', '').str.replace(r'\[.*','')
 
-ut_out = pd.concat([ut1,ut2])
-
-
+ut_out = ut.iloc[:,1:3].reset_index(drop = True)
 
 
+
+
+
+
+with open("university_towns.txt") as f:
+    townslist = f.readlines()
+
+townslist = [x.rstrip() for x in townslist]
+
+townslist2 = list()
+
+for i in townslist:
+    if i[-6:] == '[edit]':
+        temp_state = i[:-6]
+        # totlist2 = townslist2.append(temp_state)
+    elif '(' in i:
+        
+        town = i[:i.index('(') - 1]
+        townslist2.append([temp_state,town])
+    else:
+        town = i
+        townslist2.append([temp_state, town])
+
+collegedf = pd.DataFrame(townslist2, columns=['State','RegionName'])
+
+
+get_list_of_university_towns()
 
 
 
