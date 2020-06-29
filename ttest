@@ -1,0 +1,21 @@
+# create university towns dummy 
+u_towns = ut_out
+house_data = df
+start = rec_start.iloc[0,0]
+bot = rec_bottom = rec_bottom.loc[rs:re]
+
+house_data['ratio'] = house_data['2008q2'] - house_data[ '2009q2']
+
+u_towns = u_towns[['State', 'RegionName']]
+
+
+u_towns['U_Town'] = 1
+
+u_towns = u_towns.set_index(['State', 'RegionName'])
+
+# merge university towns with housing prices by state and region name 
+
+
+m = pd.merge(df,u_towns,how = 'left', on = ['State','RegionName'])
+
+m[m.U_Town.isnull()] = 0
