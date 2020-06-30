@@ -54,30 +54,6 @@ convert_housing_data_to_quarters()
 
 
 
-# col_to_drop = ['RegionID','Metro','CountyName','SizeRank']
-
-# df_con = df.drop(col_to_drop, axis =1)
-
-
-# df_con_T = df_con.T.reset_index()
-
-# # df_con_T = df_con_T.loc['2000-01','2016-08']
-
-# df_con_T['index'] = df_con_T['index'].str[0:4]+ (df_con_T['index'].str[-2:].map(mon_to_qua))
-
-# df_con_T = df_con_T.set_index('index')
-
-# df_con_final = df_con_T.T
-
-# df_con_final.rename(columns ={'0':'RegionName','1':'State'})
-
-
-
-
-
-
-
-
 
 
 
