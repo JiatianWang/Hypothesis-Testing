@@ -1,21 +1,50 @@
-# create university towns dummy 
-u_towns = ut_out
-house_data = df
-start = rec_start.iloc[0,0]
-bot = rec_bottom = rec_bottom.loc[rs:re]
+def run_ttest():
+    '''First creates new data showing the decline or growth of housing prices
+    between the recession start and the recession bottom. Then runs a ttest
+    comparing the university town values to the non-university towns values, 
+    return whether the alternative hypothesis (that the two groups are the same)
+    is true or not as well as the p-value of the confidence. 
+    
+    Return the tuple (different, p, better) where different=True if the t-test is
+    True at a p<0.01 (we reject the null hypothesis), or different=False if 
+    otherwise (we cannot reject the null hypothesis). The variable p should
+    be equal to the exact p value returned from scipy.stats.ttest_ind(). The
+    value for better should be either "university town" or "non-university town"
+    depending on which has a lower mean price ratio (which is equivilent to a
+    reduced market loss).'''
+    
+    
+    import pandas as pd 
+    from scipy.stats import ttest_ind
 
-house_data['ratio'] = house_data['2008q2'] - house_data[ '2009q2']
+    ut = get_list_of_university_towns()
+    rec_start = get_recession_start()
+    rec_bottom = get_recession_bottom()
+    h_data = convert_housing_data_to_quarters()
+    
+    ut['Type'] = 'Uni'
+    
+    h_data = h_data.reset_index()
+    h_data['Ratio'] = h_data[rec_start] - h_data[rec_bottom]
+    
+    m = pd.merge(h_data, ut, how='left', on=['State', 'RegionName'])
+    
+    m['Type'] = m['Type'].fillna('Non')
+    
+    uni = m[m['Type'] == 'Uni']
+    non = m[m['Type'] == 'Non']
+    
+    ttest = ttest_ind(uni['Ratio'].dropna(), non['Ratio'].dropna())
+    
+    if ttest[1] < 0.01:
+        different = True
+    else:
+        different = False
+    if uni['Ratio'].mean() < non['Ratio'].mean():
+        better = 'university town'
+    else:
+        better = 'non-university town'
+        
+    return (different,ttest[1], better)
 
-u_towns = u_towns[['State', 'RegionName']]
-
-
-u_towns['U_Town'] = 1
-
-u_towns = u_towns.set_index(['State', 'RegionName'])
-
-# merge university towns with housing prices by state and region name 
-
-
-m = pd.merge(df,u_towns,how = 'left', on = ['State','RegionName'])
-
-m[m.U_Town.isnull()] = 0
+run_ttest()
