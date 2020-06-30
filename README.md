@@ -24,6 +24,6 @@ Datasets:
 •	From Bureau of Economic Analysis, US Department of Commerce, the GDP over time of the United States in current dollars (use the chained value in 2009 dollars), in quarterly intervals. For this project, only look at GDP data from the first quarter of 2000 onward.
 
 ## Results
-The resulting tuple is (True, 0.0043252148535112009, 'university town') with p-value of 0.0043252148535112009, which is smaller than 0.01 (threshold). It means the null hypotheses (the two groups have similar tendency affected by 2008 – 2009 recession). The result implies that university towns’ mean house prices have less affected by 2008-2009 recession.
+The resulting tuple is (True, 0.0043252148535112009, 'university town') with p-value of 0.0043252148535112009, which is smaller than 0.01 (threshold). It means the null hypotheses (the two groups have similar tendency affected by 2008 – 2009 recession) is rejected. The result implies that university towns’ mean house prices have less affected by 2008-2009 recession.
 
 
